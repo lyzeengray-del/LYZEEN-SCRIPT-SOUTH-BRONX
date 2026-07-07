@@ -11,7 +11,7 @@ local TweenService = game:GetService("TweenService")
 
 -- Pembersihan Instansi Duplikat
 if CoreGui:FindFirstChild("LyzeenGateway") then CoreGui.LyzeenGateway:Destroy() end
-if CoreGui:FindFirstChild("ZalCloneHub") then CoreGui.ZalCloneHub:Destroy() end
+if CoreGui:FindFirstChild("LyzeenJs") then CoreGui.LyzeenJs:Destroy() end
 
 local Config = {
     Key = "LyzeenJsFree",
@@ -48,7 +48,7 @@ end
 -- [[ MAIN HUB INTERFACE (LYZEENJS) ]] --
 local function LaunchZalHub()
     local HubGui = Instance.new("ScreenGui", CoreGui)
-    HubGui.Name = "ZalCloneHub"
+    HubGui.Name = "LyzeenJs"
     
     local MainFrame = Instance.new("Frame", HubGui)
     MainFrame.Size = UDim2.new(0, 750, 0, 450)
@@ -123,7 +123,7 @@ local function LaunchZalHub()
     LogoImage.Size = UDim2.new(0, 36, 0, 36)
     LogoImage.Position = UDim2.new(0, 20, 0, 10)
     -- Ganti ID di bawah ini dengan ID asset logo yang sudah diupload ke Roblox
-    LogoImage.Image = "rbxassetid://123456789" 
+    LogoImage.Image = "rbxassetid://116369751956442
     LogoImage.BackgroundTransparency = 1
     LogoImage.ScaleType = Enum.ScaleType.Fit
     
