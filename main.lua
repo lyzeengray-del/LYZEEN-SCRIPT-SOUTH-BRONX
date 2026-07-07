@@ -262,77 +262,152 @@ local function CreateMainUI()
         local TabBtn = Instance.new("TextButton", SideBar)
         TabBtn.Size = UDim2.new(0, 120, 0, 36)
         TabBtn.BackgroundColor3 = Color3.fromRGB(28, 16, 18)
-        TabBtn.Text = "🔥 " .. tabName
-        TabBtn.Font = Enum.Font.GothamMedium
-        TabBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-        TabBtn.TextSize = 12
-        Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 6)
+-- [[ 🔴 LYZEENJS v5.0 - INTEGRATED RENDER STREAM 🔴 ]] --
+-- CONFIGURATION CACHE MATRIX
+local Config = {
+    Key = "LyzeenJsFree",
+    Theme = Color3.fromRGB(255, 20, 50),
+    ThemeRGB = true,
+    Bg = Color3.fromRGB(10, 10, 12),
+    Header = Color3.fromRGB(16, 8, 10),
+    Panel = Color3.fromRGB(20, 12, 14),
+    Border = Color3.fromRGB(45, 15, 20),
+    SilentAim = { Enabled = false, FOV = 130, TargetPart = "Head", HitChance = 100, WallCheck = false },
+    KillAura = { Enabled = false, Range = 15, Delay = 0.1 },
+    ESP = { Enabled = false, Boxes = false, Tracers = false, Names = false, Distance = false, TeamCheck = false, Color = Color3.fromRGB(255, 20, 50) },
+    WalkSpeed = { Enabled = false, Value = 16 },
+    JumpPower = { Enabled = false, Value = 50 },
+    InfiniteJump = false, Noclip = false, Fly = { Enabled = false, Speed = 50 },
+    AutoCollect = false, AutoSell = false, InstantProcess = false, FPSBoost = false
+}
 
-        -- Dummy Section Creator Inside Scroll Container
-        local SectionFrame = Instance.new("Frame", ContainerLayout)
-        SectionFrame.Size = UDim2.new(1, -10, 0, 120)
-        SectionFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
-        SectionFrame.BorderSizePixel = 0
-        Instance.new("UICorner", SectionFrame).CornerRadius = UDim.new(0, 8)
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local HttpService = game:GetService("HttpService")
 
-        local SecTitle = Instance.new("TextLabel", SectionFrame)
-        SecTitle.Size = UDim2.new(1, -10, 0, 30)
-        SecTitle.Position = UDim2.new(0, 10, 0, 0)
-        SecTitle.Text = tabName:upper() .. " MODULES"
-        SecTitle.Font = Enum.Font.GothamBold
-        SecTitle.TextColor3 = Config.Theme
-        SecTitle.TextSize = 12
-        SecTitle.TextXAlignment = Enum.TextXAlignment.Left
-        SecTitle.BackgroundTransparency = 1
+if CoreGui:FindFirstChild("LyzeenJs_SecureGateway") then CoreGui.LyzeenJs_SecureGateway:Destroy() end
+if CoreGui:FindFirstChild("LyzeenJs_MainFramework") then CoreGui.LyzeenJs_MainFramework:Destroy() end
 
-        -- Inside Section Interactive Elements (Toggle Switches Blueprint)
-        local ToggleBtn = Instance.new("TextButton", SectionFrame)
-        ToggleBtn.Size = UDim2.new(0, 140, 0, 32)
-        ToggleBtn.Position = UDim2.new(0, 10, 0, 40)
-        ToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-        ToggleBtn.Text = "Enable Master Opt"
-        ToggleBtn.Font = Enum.Font.GothamMedium
-        ToggleBtn.TextColor3 = Color3.new(1,1,1)
-        ToggleBtn.TextSize = 11
-        Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 6)
-
-        local Toggled = false
-        ToggleBtn.MouseButton1Click:Connect(function()
-            Toggled = not Toggled
-            ToggleBtn.BackgroundColor3 = Toggled and Config.Theme or Color3.fromRGB(25, 25, 30)
-            Notify(tabName, "Feature updated state to: " .. tostring(Toggled), 2)
-        end)
-    end
-
-    Notify("SYSTEM", "LyzeenJs Hub fully loaded! Enjoy premium execution.", 4)
+local function Notify(title, text)
+    StarterGui:SetCore("SendNotification", {Title = "🔴 " .. title, Text = text, Duration = 4})
 end
 
--- [[ KEY VERIFICATION FUNCTION ALGORITHM ]] --
+local function EnableDrag(frame)
+    local dragToggle, dragStart, startPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = true; dragStart = input.Position; startPos = frame.Position
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragToggle = false end end)
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragToggle then
+            local delta = input.Position - dragStart
+            TweenService:Create(frame, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            }):Play()
+        end
+    end)
+end
+
+-- [[ INTERACTIVE MAIN HUB GATEWAY ]] --
+local function CreateMainUI()
+    local MainUI = Instance.new("ScreenGui", CoreGui)
+    MainUI.Name = "LyzeenJs_MainFramework"
+    
+    local MainFrame = Instance.new("Frame", MainUI)
+    MainFrame.Size = UDim2.new(0, 550, 0, 350)
+    MainFrame.Position = UDim2.new(0.5, -275, 0.5, -175)
+    MainFrame.BackgroundColor3 = Config.Bg
+    EnableDrag(MainFrame)
+    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+    
+    local MainStroke = Instance.new("UIStroke", MainFrame)
+    MainStroke.Color = Config.Border
+    MainStroke.Thickness = 1.5
+
+    local TopBar = Instance.new("Frame", MainFrame)
+    TopBar.Size = UDim2.new(1, 0, 0, 40)
+    TopBar.BackgroundColor3 = Config.Header
+    Instance.new("UICorner", TopBar).CornerRadius = UDim.new(0, 10)
+
+    local Title = Instance.new("TextLabel", TopBar)
+    Title.Size = UDim2.new(1, -50, 1, 0)
+    Title.Position = UDim2.new(0, 15, 0, 0)
+    Title.Text = "🔴 LYZEENJS PREMIUM v5.0"
+    Title.Font = Enum.Font.GothamBold
+    Title.TextColor3 = Color3.new(1, 1, 1)
+    Title.TextSize = 14
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+    Title.BackgroundTransparency = 1
+
+    local CloseBtn = Instance.new("TextButton", TopBar)
+    CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+    CloseBtn.Position = UDim2.new(1, -40, 0, 5)
+    CloseBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 25)
+    CloseBtn.Text = "❌"
+    CloseBtn.TextColor3 = Color3.new(1,1,1)
+    Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 5)
+    CloseBtn.MouseButton1Click:Connect(function() MainUI:Destroy() end)
+
+    Notify("SUCCESS", "LyzeenJs Engine Activated Successfully!")
+end
+
+-- [[ KEY GATEWAY SYSTEM UI ]] --
+local KeyUI = Instance.new("ScreenGui", CoreGui)
+KeyUI.Name = "LyzeenJs_SecureGateway"
+
+local KeyMain = Instance.new("Frame", KeyUI)
+KeyMain.Size = UDim2.new(0, 400, 0, 220)
+KeyMain.Position = UDim2.new(0.5, -200, 0.5, -110)
+KeyMain.BackgroundColor3 = Config.Bg
+EnableDrag(KeyMain)
+Instance.new("UICorner", KeyMain).CornerRadius = UDim.new(0, 12)
+
+local KeyStroke = Instance.new("UIStroke", KeyMain)
+KeyStroke.Color = Config.Border
+
+local KTitle = Instance.new("TextLabel", KeyMain)
+KTitle.Size = UDim2.new(1, 0, 0, 50)
+KTitle.Text = "🛡️ LYZEENJS SECURE GATEWAY"
+KTitle.Font = Enum.Font.GothamBold
+KTitle.TextColor3 = Color3.new(1, 1, 1)
+KTitle.TextSize = 14
+KTitle.BackgroundTransparency = 1
+
+local KInput = Instance.new("TextBox", KeyMain)
+KInput.Size = UDim2.new(0, 320, 0, 40)
+KInput.Position = UDim2.new(0.5, -160, 0.4, 0)
+KInput.BackgroundColor3 = Config.Panel
+KInput.Text = ""
+KInput.PlaceholderText = "🔑 Enter Key..."
+KInput.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", KInput).CornerRadius = UDim.new(0, 6)
+
+local KBtn = Instance.new("TextButton", KeyMain)
+KBtn.Size = UDim2.new(0, 150, 0, 35)
+KBtn.Position = UDim2.new(0.5, -75, 0.7, 10)
+KBtn.BackgroundColor3 = Config.Theme
+KBtn.Text = "⚡ VERIFY KEY"
+KBtn.Font = Enum.Font.GothamBold
+KBtn.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", KBtn).CornerRadius = UDim.new(0, 6)
+
 KBtn.MouseButton1Click:Connect(function()
     if KInput.Text == Config.Key then
-        Notify("ACCESS GRANTED", "Valid Key! Initializing framework infrastructure...", 3)
         KeyUI:Destroy()
-        task.wait(0.5)
         CreateMainUI()
     else
-        Notify("ACCESS DENIED", "Incorrect key token entered. Please try again.", 4)
+        Notify("ERROR", "Wrong Access Token Key Key!")
         KInput.Text = ""
-        TweenService:Create(KInput, TweenInfo.new(0.05, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, 3, true), {
-            Position = UDim2.new(0.5, -175, 0.4, 0)
-        }):Play()
     end
 end)
 
--- RGB Theme Glow Loop Implementation
-task.spawn(function()
-    while task.wait(0.05) do
-        if KeyUI and KeyUI:FindFirstChild("Frame") then
-            local hue = (tick() % 5) / 5
-            local rgbColor = Color3.fromHSV(hue, 0.8, 1)
-            KGlow.ImageColor3 = rgbColor
-        end
-    end
-end)
 -- [[ CONTINUATION OF LYZEENJS v5.0 - ADVANCED SYSTEMS ENGINE ]] --
 
 local Camera = workspace.CurrentCamera
