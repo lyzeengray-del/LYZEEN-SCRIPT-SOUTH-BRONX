@@ -1,196 +1,173 @@
--- [[ 🔴 LYZEENJS v5.0 - UNTOUCHABLE CARNAGE EDITION (FULL FIXED) 🔴 ]] --
--- ANTI-CRASH PROTECTION INCLUDED
+-- [[ 🔴 LYZEENJS v5.0 - ABSOLUTE INDEPENDENT ENGINE 🔴 ]] --
+-- TIDAK BUTUH SERVER LUAR - 100% PASTI MUNCUL DI SEMUA EXECUTOR
 
-local Success, ErrorMessage = pcall(function()
-    -- Pemanggilan UI Rayfield Versi Paling Stabil & Universal
-    local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
-    -- [[ CORE CONFIGURATION DATA ]] --
-    local Config = {
-        Key = "LyzeenJsFree",
-        SilentAim = { Enabled = false, FOV = 130, TargetPart = "Head" },
-        KillAura = { Enabled = false, Range = 18 },
-        WalkSpeed = { Enabled = false, Value = 16 },
-        InfiniteJump = false,
-        Noclip = false,
-        AutoCollect = false,
-        AutoSell = false
-    }
+-- Hapus UI lama jika duplikat
+if CoreGui:FindFirstChild("LyzeenGateway") then CoreGui.LyzeenGateway:Destroy() end
+if CoreGui:FindFirstChild("LyzeenHub") then CoreGui.LyzeenHub:Destroy() end
 
-    -- [[ ACCESSIBILITY GATEWAY SYSTEM (KEY SYSTEM) ]] --
-    local Window = Rayfield:CreateWindow({
-       Name = "🔴 LYZEENJS PREMIUM v5.0",
-       LoadingTitle = "⚡ LyzeenJs Infrastructure",
-       LoadingSubtitle = "by Lyzeen",
-       ConfigurationSaving = { Enabled = false },
-       KeySystem = true,
-       KeySettings = {
-          Title = "🔑 LyzeenJs Secure Gateway",
-          Subtitle = "Masukkan Kunci Akses Premium",
-          Note = "Key bawaan: LyzeenJsFree",
-          FileName = "LyzeenKeyCache",
-          SaveKey = true,
-          GrabKeyFromUrl = false,
-          Key = {"LyzeenJsFree"}
-       }
-    })
+-- State Cache
+local Config = { Key = "LyzeenJsFree", WalkSpeed = 16, InfiniteJump = false, Noclip = false }
 
-    local Players = game:GetService("Players")
-    local LP = Players.LocalPlayer
-    local UserInputService = game:GetService("UserInputService")
-    local RunService = game:GetService("RunService")
-
-    -- [[ TAB MENUS ]] --
-    local TabCombat = Window:CreateTab("🎯 Combat", 4483362458)
-    local TabFarm = Window:CreateTab("🌾 Auto Farm", 4483362458)
-    local TabMovement = Window:CreateTab("👟 Movement", 4483362458)
-
-    -- ========================================================
-    -- [[ 1. COMBAT MODULE ]] --
-    -- ========================================================
-    TabCombat:CreateSection("Aimbot & Carnage Controls")
-
-    TabCombat:CreateToggle({
-       Name = "Enable Silent Aim",
-       CurrentValue = false,
-       Flag = "SilentAimToggle",
-       Callback = function(Value) Config.SilentAim.Enabled = Value end,
-    })
-
-    TabCombat:CreateToggle({
-       Name = "Kill Aura (Auto Attack)",
-       CurrentValue = false,
-       Flag = "KillAuraToggle",
-       Callback = function(Value) Config.KillAura.Enabled = Value end,
-    })
-
-    local DesyncActive = false
-    TabCombat:CreateToggle({
-       Name = "💀 Activate Server Desync Lag",
-       CurrentValue = false,
-       Flag = "DesyncToggle",
-       Callback = function(Value)
-          DesyncActive = Value
-          task.spawn(function()
-             while DesyncActive do
-                if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
-                    local Root = LP.Character.HumanoidRootPart
-                    local OldCFrame = Root.CFrame
-                    Root.Velocity = Vector3.new(999999, 999999, 999999)
-                    RunService.Heartbeat:Wait()
-                    Root.CFrame = OldCFrame
-                else break end
-             end
-          end)
-       end,
-    })
-
-    -- ========================================================
-    -- [[ 2. AUTO FARM MODULE ]] --
-    -- ========================================================
-    TabFarm:CreateSection("Industrial Automation")
-
-    TabFarm:CreateToggle({
-       Name = "🌾 Auto Collect Items",
-       CurrentValue = false,
-       Flag = "CollectToggle",
-       Callback = function(Value) Config.AutoCollect = Value end,
-    })
-
-    TabFarm:CreateToggle({
-       Name = "💰 Auto Teleport Sell",
-       CurrentValue = false,
-       Flag = "SellToggle",
-       Callback = function(Value) Config.AutoSell = Value end,
-    })
-
-    -- ========================================================
-    -- [[ 3. MOVEMENT MODULE ]] --
-    -- ========================================================
-    TabMovement:CreateSection("Physics Modifier")
-
-    TabMovement:CreateSlider({
-       Name = "Custom WalkSpeed",
-       Min = 16,
-       Max = 250,
-       Default = 16,
-       Color = Color3.fromRGB(255, 20, 50),
-       Increment = 2,
-       ValueName = "Speed",
-       Flag = "SpeedSlider",
-       Callback = function(Value) 
-          Config.WalkSpeed.Value = Value
-          Config.WalkSpeed.Enabled = true 
-       end,
-    })
-
-    TabMovement:CreateToggle({
-       Name = "Infinite Jump Mechanics",
-       CurrentValue = false,
-       Flag = "InfJumpToggle",
-       Callback = function(Value) Config.InfiniteJump = Value end,
-    })
-
-    TabMovement:CreateToggle({
-       Name = "🧱 Noclip (Tembus Tembok)",
-       CurrentValue = false,
-       Flag = "NoclipToggle",
-       Callback = function(Value) Config.Noclip = Value end,
-    })
-
-    -- ========================================================
-    -- [[ CORE RUNTIME LOGIC LOOPS ]] --
-    -- ========================================================
-
-    -- Kill Aura & Speed Handler Loop
-    task.spawn(function()
-        while task.wait(0.1) do
-            pcall(function()
-                if LP.Character and LP.Character:FindFirstChildOfClass("Humanoid") then
-                    local Hum = LP.Character:FindFirstChildOfClass("Humanoid")
-                    if Config.WalkSpeed.Enabled then Hum.WalkSpeed = Config.WalkSpeed.Value end
-                end
-                
-                if Config.KillAura.Enabled and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
-                    for _, v in pairs(Players:GetPlayers()) do
-                        if v ~= LP and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Humanoid") then
-                            local Dist = (LP.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
-                            if Dist <= Config.KillAura.Range and v.Character.Humanoid.Health > 0 then
-                                local Tool = LP.Character:FindFirstChildOfClass("Tool")
-                                if Tool then Tool:Activate() end
-                            end
-                        end
-                    end
-                end
-            end)
+-- Fungsi Drag Frame (Biar Bisa Digeser di HP)
+local function MakeDraggable(frame)
+    local dragToggle, dragStart, startPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragToggle = true; dragStart = input.Position; startPos = frame.Position
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragToggle = false end end)
         end
     end)
+    UserInputService.InputChanged:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragToggle then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
 
-    -- Noclip Runtime Loop
-    RunService.Stepped:Connect(function()
-        if Config.Noclip and LP.Character then
-            for _, part in pairs(LP.Character:GetDescendants()) do
-                if part:IsA("BasePart") then part.CanCollide = false end
+-- [[ INTERFACE HUB UTAMA ]] --
+local function LaunchLyzeenHub()
+    local HubGui = Instance.new("ScreenGui", CoreGui)
+    HubGui.Name = "LyzeenHub"
+    
+    local MainFrame = Instance.new("Frame", HubGui)
+    MainFrame.Size = UDim2.new(0, 350, 0, 250)
+    MainFrame.Position = UDim2.new(0.5, -175, 0.5, -125)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+    MakeDraggable(MainFrame)
+    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
+    Instance.new("UIStroke", MainFrame).Color = Color3.fromRGB(255, 20, 50)
+    
+    local Title = Instance.new("TextLabel", MainFrame)
+    Title.Size = UDim2.new(1, 0, 0, 40)
+    Title.Text = "🔴 LYZEENJS PREMIUM v5.0"
+    Title.TextColor3 = Color3.new(1, 1, 1)
+    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 14
+    Title.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 8)
+    
+    -- Tombol Fitur Speed
+    local SpeedBtn = Instance.new("TextButton", MainFrame)
+    SpeedBtn.Size = UDim2.new(0, 310, 0, 35)
+    SpeedBtn.Position = UDim2.new(0, 20, 0, 60)
+    SpeedBtn.Text = "⚡ Fast Speed (Set to 100)"
+    SpeedBtn.TextColor3 = Color3.new(1, 1, 1)
+    SpeedBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    Instance.new("UICorner", SpeedBtn)
+    
+    local SpeedActive = false
+    SpeedBtn.MouseButton1Click:Connect(function()
+        SpeedActive = not SpeedActive
+        SpeedBtn.BackgroundColor3 = SpeedActive and Color3.fromRGB(255, 20, 50) or Color3.fromRGB(30, 30, 35)
+        Config.WalkSpeed = SpeedActive and 100 or 16
+    end)
+    
+    -- Tombol Fitur Infinite Jump
+    local JumpBtn = Instance.new("TextButton", MainFrame)
+    JumpBtn.Size = UDim2.new(0, 310, 0, 35)
+    JumpBtn.Position = UDim2.new(0, 20, 0, 110)
+    JumpBtn.Text = "🪶 Toggle Infinite Jump [OFF]"
+    JumpBtn.TextColor3 = Color3.new(1, 1, 1)
+    JumpBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    Instance.new("UICorner", JumpBtn)
+    
+    JumpBtn.MouseButton1Click:Connect(function()
+        Config.InfiniteJump = not Config.InfiniteJump
+        JumpBtn.Text = "🪶 Toggle Infinite Jump [" .. (Config.InfiniteJump and "ON" or "OFF") .. "]"
+        JumpBtn.BackgroundColor3 = Config.InfiniteJump and Color3.fromRGB(255, 20, 50) or Color3.fromRGB(30, 30, 35)
+    end)
+
+    -- Tombol Fitur Noclip
+    local NoclipBtn = Instance.new("TextButton", MainFrame)
+    NoclipBtn.Size = UDim2.new(0, 310, 0, 35)
+    NoclipBtn.Position = UDim2.new(0, 20, 0, 160)
+    NoclipBtn.Text = "🧱 Toggle Noclip [OFF]"
+    NoclipBtn.TextColor3 = Color3.new(1, 1, 1)
+    NoclipBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    Instance.new("UICorner", NoclipBtn)
+    
+    NoclipBtn.MouseButton1Click:Connect(function()
+        Config.Noclip = not Config.Noclip
+        NoclipBtn.Text = "🧱 Toggle Noclip [" .. (Config.Noclip and "ON" or "OFF") .. "]"
+        NoclipBtn.BackgroundColor3 = Config.Noclip and Color3.fromRGB(255, 20, 50) or Color3.fromRGB(30, 30, 35)
+    end)
+    
+    -- [[ LOOP CORE LOGIC LOOPS ]] --
+    task.spawn(function()
+        while task.wait(0.1) do
+            if LP.Character and LP.Character:FindFirstChildOfClass("Humanoid") then
+                LP.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = Config.WalkSpeed
             end
         end
     end)
-
-    -- Infinite Jump Listener
+    
+    RunService.Stepped:Connect(function()
+        if Config.Noclip and LP.Character then
+            for _, v in pairs(LP.Character:GetDescendants()) do
+                if v:IsA("BasePart") then v.CanCollide = false end
+            end
+        end
+    end)
+    
     UserInputService.JumpRequest:Connect(function()
         if Config.InfiniteJump and LP.Character and LP.Character:FindFirstChildOfClass("Humanoid") then
             LP.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
         end
     end)
-
-    Rayfield:Notify({Title = "DEPLOY SUCCESS", Content = "Semua fitur ganas LyzeenJs v5.0 aktif sempurna!", Duration = 5})
-end)
-
--- Jika Script Mengalami Eror/Crash, Ini Akan Memunculkan Pesan Eror di Layar Game
-if not Success then
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "❌ LYZEENJS ERROR",
-        Text = "Terjadi crash: " .. tostring(ErrorMessage),
-        Duration = 10
-    })
-    warn("[LYZEENJS CRASH LOG]: " .. tostring(ErrorMessage))
 end
+
+-- [[ GATEWAY KEY SYSTEM UI ]] --
+local GatewayGui = Instance.new("ScreenGui", CoreGui)
+GatewayGui.Name = "LyzeenGateway"
+
+local Frame = Instance.new("Frame", GatewayGui)
+Frame.Size = UDim2.new(0, 320, 0, 180)
+Frame.Position = UDim2.new(0.5, -160, 0.5, -90)
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+MakeDraggable(Frame)
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 8)
+Instance.new("UIStroke", Frame).Color = Color3.fromRGB(255, 20, 50)
+
+local lbl = Instance.new("TextLabel", Frame)
+lbl.Size = UDim2.new(1, 0, 0, 40)
+lbl.Text = "🔑 LYZEENJS SECURE GATEWAY"
+lbl.TextColor3 = Color3.new(1, 1, 1)
+lbl.Font = Enum.Font.GothamBold
+lbl.TextSize = 12
+lbl.BackgroundTransparency = 1
+
+local Box = Instance.new("TextBox", Frame)
+Box.Size = UDim2.new(0, 260, 0, 35)
+Box.Position = UDim2.new(0.5, -130, 0.4, 0)
+Box.PlaceholderText = "Masukkan Key..."
+Box.Text = ""
+Box.TextColor3 = Color3.new(1, 1, 1)
+Box.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+Instance.new("UICorner", Box)
+
+local Btn = Instance.new("TextButton", Frame)
+Btn.Size = UDim2.new(0, 140, 0, 35)
+Btn.Position = UDim2.new(0.5, -70, 0.7, 5)
+Btn.Text = "VERIFY"
+Btn.TextColor3 = Color3.new(1, 1, 1)
+Btn.BackgroundColor3 = Color3.fromRGB(255, 20, 50)
+Btn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", Btn)
+
+Btn.MouseButton1Click:Connect(function()
+    if Box.Text == Config.Key then
+        GatewayGui:Destroy()
+        LaunchLyzeenHub()
+    else
+        Box.Text = ""
+        Box.PlaceholderText = "❌ Key Salah, Coba Lagi!"
+    end
+end)
